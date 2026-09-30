@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Report Card</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="dashboard-container" id="reportCard">
+
+        <!-- ACTION BUTTONS (hidden when printing) -->
+        <div class="action-buttons no-print">
+            <button onclick="window.print()">🖨️ Print / Save as PDF</button>
+            <button onclick="saveData()">💾 Save</button>
+            <button onclick="createNewStudent()">➕ New Student</button>
+            <button onclick="bulkAddStudents()">📥 Bulk Add</button>
+            <button onclick="deleteStudent()" class="danger-btn">🗑️ Delete</button>
+            <button onclick="clearForm()" class="clear-btn">🧹 Clear</button>
+        </div>
+
+        <!-- STUDENT SELECTOR -->
+        <div class="student-panel no-print">
+            <div class="student-selector">
+                <label for="studentList">Quick Select:</label>
+                <select id="studentList" onchange="loadSelectedStudent()">
+                    <option value="">-- No students yet --</option>
+                </select>
+            </div>
+            <div class="student-list" id="studentLinks"></div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="report-header">
+            <div class="header-left">
+                <img src="deped-logo.png" alt="DepEd Logo" class="deped-logo">
+            </div>
+            <div class="header-center">
+                <p>Republic of the Philippines</p>
+                <p>Department of Education</p>
+                <p>Schools Division Office of Zambales</p>
+                <p>Locloc, Palauig, Zambales</p>
+                <h2>LOCLOC NATIONAL HIGH SCHOOL</h2>
+            </div>
+            <div class="header-right">
+                <img src="school-logo.jpg" alt="School Logo" class="school-logo">
+            </div>
+        </header>
+
+        <!-- STUDENT INFO -->
+        <section class="student-info">
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="info-label">Name:</span>
+                    <input type="text" id="studentName" class="underline-input">
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Grade & Section:</span>
+                    <input type="text" id="gradeSection" class="underline-input">
+                </div>
+                <div class="info-item small">
+                    <span class="info-label">Term:</span>
+                    <input type="text" id="term" class="underline-input">
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="info-label">Subject:</span>
+                    <input type="text" id="subject" class="underline-input">
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Teacher:</span>
+                    <input type="text" id="teacher" class="underline-input">
+                </div>
+                <div class="info-item small">
+                    <span class="info-label">S.Y.:</span>
+                    <input type="text" id="schoolYear" class="underline-input">
+                </div>
+            </div>
+        </section>
+
+        <!-- WRITTEN WORKS (20%) -->
+        <section class="assessment-section">
+            <div class="section-header ww-header">WRITTEN / ORAL WORKS (WWs) 20%</div>
+            <table class="score-table">
+                <thead>
+                    <tr class="number-row">
+                        <th class="label-col"></th>
+                        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                        <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label">Highest Possible Score</td>
+                        <td contenteditable="true">10</td><td contenteditable="true">10</td>
+                        <td contenteditable="true">10</td><td contenteditable="true">10</td>
+                        <td contenteditable="true">10</td><td contenteditable="true">10</td>
+                        <td contenteditable="true">10</td><td contenteditable="true">10</td>
+                        <td contenteditable="true">10</td><td contenteditable="true">10</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Learner's Score</td>
+                        <td contenteditable="true">0</td><td contenteditable="true">0</td>
+                        <td contenteditable="true">0</td><td contenteditable="true">0</td>
+                        <td contenteditable="true">0</td><td contenteditable="true">0</td>
+                        <td contenteditable="true">0</td><td contenteditable="true">0</td>
+                        <td contenteditable="true">0</td><td contenteditable="true">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="percentage-display">WW Percentage: <span id="ww-percentage">0%</span></div>
+        </section>
+
+        <!-- PERFORMANCE TASKS (50%) -->
+        <section class="assessment-section">
+            <div class="section-header pt-header">PRODUCT / PERFORMANCE TASKS (PTs) 50%</div>
+            <table class="score-table">
+                <thead>
+                    <tr class="number-row">
+                        <th class="label-col"></th>
+                        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label">Highest Possible Score</td>
+                        <td contenteditable="true">100</td><td contenteditable="true">100</td>
+                        <td contenteditable="true">100</td><td contenteditable="true">100</td>
+                        <td contenteditable="true">100</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Learner's Score</td>
+                        <td contenteditable="true">0</td><td contenteditable="true">0</td>
+                        <td contenteditable="true">0</td><td contenteditable="true">0</td>
+                        <td contenteditable="true">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="percentage-display">PT Percentage: <span id="pt-percentage">0%</span></div>
+        </section>
+
+        <!-- EXAMINATIONS (30%) -->
+        <section class="assessment-section">
+            <div class="section-header ex-header">EXAMINATIONS (EXs) 30%</div>
+            <table class="score-table">
+                <thead>
+                    <tr class="number-row">
+                        <th class="label-col"></th>
+                        <th>ST1</th>
+                        <th>ST2</th>
+                        <th>TE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label">Highest Possible Score</td>
+                        <td contenteditable="true">25</td>
+                        <td contenteditable="true">25</td>
+                        <td contenteditable="true">50</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Learner's Score</td>
+                        <td contenteditable="true">0</td>
+                        <td contenteditable="true">0</td>
+                        <td contenteditable="true">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="percentage-display">EX Percentage: <span id="ex-percentage">0%</span></div>
+        </section>
+
+        <!-- SIGNATURE: PARENT AND TEACHER -->
+        <section class="signature-section">
+            <div class="signature-box">
+                <div class="signature-space"></div>
+                <input type="text" id="parentSignature" class="signature-input">
+                <div class="signature-label">Parent's/Guardian's Name and Signature</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-space"></div>
+                <input type="text" id="teacherSignature" class="signature-input">
+                <div class="signature-label">Signature Over Printed Name of Teacher</div>
+            </div>
+        </section>
+
+        <!-- COMMENTS -->
+        <section class="comments-section">
+            <div class="comment-row">
+                <div class="comment-label">Teacher's comments/remarks</div>
+                <div class="comment-value">
+                    <textarea rows="2" id="teacherComment"></textarea>
+                </div>
+            </div>
+            <div class="comment-row">
+                <div class="comment-label">Parent's/Guardian comments/remarks</div>
+                <div class="comment-value">
+                    <textarea rows="2" id="parentComment"></textarea>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
